@@ -78,6 +78,13 @@
       #post-body-input::-webkit-scrollbar-thumb:hover {
          background: #555;
       }
+
+      #nav-user-image {
+         width: 40px;
+         height: 40px;
+         margin-right: 10px;
+
+      }
    </style>
 </head>
 
@@ -125,17 +132,25 @@
 
                <form>
                   <div class="mb-3">
+                     <label for="register-image-input" class="col-form-label">Profile Image</label>
+                     <input type="file" class="form-control" id="register-image-input">
+                  </div>
+
+                  <div class="mb-3">
                      <label for="register-name-input" class="col-form-label">Name:</label>
                      <input type="text" class="form-control" id="register-name-input">
                   </div>
+
                   <div class="mb-3">
                      <label for="register-username-input" class="col-form-label">Username:</label>
                      <input type="text" class="form-control" id="register-username-input">
                   </div>
+
                   <div class="mb-3">
                      <label for="register-password-input" class="col-form-label">Password:</label>
                      <input type="password" class="form-control" id="register-password-input">
                   </div>
+
                </form>
 
             </div>
@@ -237,9 +252,14 @@
                      <!-- LOGGED IN USER -->
 
                      <!-- FOR LOGGED IN USER -->
-                     <div class="w-100 d-flex justify-content-end" id="logout-div">
+                     <div class="w-100 d-flex justify-content-end align-items-center" id="logout-div">
+                        <img id="nav-user-image" class="rounded-circle" src=" ./profile-pics/user-1.png"
+                           alt="profile-pics">
+                        <b id="nav-username">@Koko</b>
                         <button id="logout-btn" type="button" class="btn btn-outline-danger mx-3" data-bs-toggle="modal"
-                           onclick="logout()">Logout</button>
+                           onclick="logout()">
+                           Logout
+                        </button>
                      </div>
                      <!-- FOR LOGGED IN USER -->
                   </div>

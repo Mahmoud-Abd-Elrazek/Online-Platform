@@ -91,14 +91,24 @@ function registerBtnClicked() {
    const name = document.getElementById("register-name-input").value;
    const username = document.getElementById("register-username-input").value;
    const password = document.getElementById("register-password-input").value;
+   const image = document.getElementById("register-image-input").files[0];
 
-   const params = {
-      "username": username,
-      "password": password,
-      "name": name
+   // Form Data
+   let formData = new FormData();
+
+   //formData.append(Key Value); 
+   formData.append("name", name);
+   formData.append("username", username);
+   formData.append("password", password);
+   formData.append("image", image);
+
+
+   const headers = {
+      "Content-Type": "multipart/form-data", // perfom with form data
    }
+
    const url = `${baseUrl}/register`;
-   axios.post(url, params)
+   axios.post(url, formData, { headers: headers })
       .then((response) => {
          localStorage.setItem("token", response.data.token);
          localStorage.setItem("user", JSON.stringify(response.data.user));
@@ -136,13 +146,24 @@ function setupUI() {
       logoutBtn.setAttribute('style', 'display:none !important');
       addBtn.setAttribute('style', 'visibility: hidden !important');
    }
-   else {
+   else { // For Logged in user
       loginDiv.setAttribute('style', 'display:none !important');
       logoutBtn.setAttribute('style', 'display:flex !important');
       addBtn.setAttribute('style', 'visibility: visible; !important');
+
+      const user = getCurrentUser();
+      document.getElementById("nav-username").innerHTML = user.name;
+      document.getElementById("nav-user-image").src = user.profile_image;
    }
 } setupUI(); // call it directly 'Runnig All Time'
 
+function getCurrentUser() {
+   let user = localStorage.getItem("user");
+   if (user != null) {
+      user = JSON.parse(user); // convert it to JSON
+   }
+   return user;
+}
 
 function showAlert(alertMessage, type = 'success') {
    const alertPlaceholder = document.getElementById("success-alert");
@@ -175,9 +196,6 @@ function createNewPostClicked() {
    const body = document.getElementById("post-body-input").value;
 
    const image = document.getElementById("post-imgae-input").files[0];
-   console.log(image);
-   console.log(title);
-   console.log(body);
 
    // Form Data
    let formData = new FormData();
@@ -201,17 +219,11 @@ function createNewPostClicked() {
          const modal = document.getElementById("create-post-modal");
          const modalInstance = bootstrap.Modal.getInstance(modal);
          modalInstance.hide();
-         setTimeout(() => {
-            showAlert("New post has been created susscessfully", "success");
-            getPosts();
-         }, 1000);
+         showAlert("New post has been created susscessfully", "success");
+         getPosts();
       })
       .catch((er) => {
          showAlert(er.response.data.message, "danger");
       });
 }
-function resetInput(input) {
-   input.value = "";
-}
-// Rest Text
-// document.getElementById("post-body-input").value = "";
+
