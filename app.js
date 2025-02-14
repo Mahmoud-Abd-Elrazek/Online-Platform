@@ -1,19 +1,22 @@
 const baseUrl = "https://tarmeezacademy.com/api/v1";
-var requestOptions = {
-   method: 'GET',
-   redirect: 'follow'
-};
 
-fetch(`${baseUrl}/posts?limit=10`, requestOptions)
-   .then(response => response.json())
-   .then(posts => {
-      document.getElementById("posts").innerHTML = "";
-      for (const post of posts.data) {
-         // todo: Add Tags here
-         document.getElementById("posts").innerHTML += createPost(post);
-      }
-   })
-   .catch(error => console.log('error', error));
+function getPosts() {
+   var requestOptions = {
+      method: 'GET',
+      redirect: 'follow'
+   };
+
+   fetch(`${baseUrl}/posts?limit=10`, requestOptions)
+      .then(response => response.json())
+      .then(posts => {
+         document.getElementById("posts").innerHTML = "";
+         for (const post of posts.data) {
+            // todo: Add Tags here
+            document.getElementById("posts").innerHTML += createPost(post);
+         }
+      })
+      .catch(error => console.log('error', error));
+} getPosts();
 
 // Function To Create Post and Push into the page
 function createPost(post) {
@@ -111,6 +114,7 @@ function registerBtnClicked() {
          showAlert(er.response.data.message, "danger");
       });
 }
+
 function logout() {
    localStorage.removeItem("user");
    localStorage.removeItem("token");
@@ -125,13 +129,17 @@ function setupUI() {
    const loginDiv = document.getElementById("logged-in-div");
    const logoutBtn = document.getElementById("logout-div");
 
+   const addBtn = document.getElementById("add-post-btn");
+
    if (token == null) { // gust 
       loginDiv.setAttribute('style', 'display:flex !important');
       logoutBtn.setAttribute('style', 'display:none !important');
+      addBtn.setAttribute('style', 'visibility: hidden !important');
    }
    else {
       loginDiv.setAttribute('style', 'display:none !important');
       logoutBtn.setAttribute('style', 'display:flex !important');
+      addBtn.setAttribute('style', 'visibility: visible; !important');
    }
 } setupUI(); // call it directly 'Runnig All Time'
 
@@ -161,3 +169,49 @@ function showAlert(alertMessage, type = 'success') {
    }, 2000);
 
 }
+
+function createNewPostClicked() {
+   const title = document.getElementById("post-title-input").value;
+   const body = document.getElementById("post-body-input").value;
+
+   const image = document.getElementById("post-imgae-input").files[0];
+   console.log(image);
+   console.log(title);
+   console.log(body);
+
+   // Form Data
+   let formData = new FormData();
+   //formData.append(Key Value); 
+   formData.append("body", body);
+   formData.append("title", title);
+   formData.append("image", image);
+
+
+   const url = `${baseUrl}/posts`;
+   const token = localStorage.getItem("token");
+   const headers = {
+      "authorization": `Bearer ${token}`
+   }
+   axios.post(url, formData, {
+      "Content-Type": "multipart/form-data", // perfom with form data
+      headers: headers
+   })
+      .then((response) => {
+         // Hide The Model After 
+         const modal = document.getElementById("create-post-modal");
+         const modalInstance = bootstrap.Modal.getInstance(modal);
+         modalInstance.hide();
+         setTimeout(() => {
+            showAlert("New post has been created susscessfully", "success");
+            getPosts();
+         }, 1000);
+      })
+      .catch((er) => {
+         showAlert(er.response.data.message, "danger");
+      });
+}
+function resetInput(input) {
+   input.value = "";
+}
+// Rest Text
+// document.getElementById("post-body-input").value = "";

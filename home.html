@@ -27,6 +27,57 @@
          width: 30%;
          z-index: 1000;
       }
+
+      #add-post-btn {
+         width: 60px;
+         height: 60px;
+         color: #fff;
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.3);
+
+         position: fixed;
+         bottom: 7%;
+         right: 3%;
+         z-index: 5555;
+      }
+
+      #add-post-btn:hover {
+         background-color: transparent !important;
+         color: rgba(13, 110, 253, 1);
+         border-color: rgba(13, 110, 253, 1);
+      }
+
+      #post-body-input {
+         width: 100%;
+         height: 100px;
+         padding: 10px;
+         border-radius: 6px;
+         border-color: gray;
+         resize: none;
+         outline: none;
+         overflow-y: auto;
+      }
+
+      #post-body-input:focus {
+         border-color: rgba(13, 110, 253, 1);
+         outline: none;
+         box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+      }
+
+      #post-body-input::-webkit-scrollbar {
+         width: 4px;
+      }
+
+      #post-body-input::-webkit-scrollbar-thumb {
+         background: rgba(13, 110, 253, 1);
+         border-radius: 6px;
+      }
+
+      #post-body-input::-webkit-scrollbar-thumb:hover {
+         background: #555;
+      }
    </style>
 </head>
 
@@ -98,7 +149,57 @@
    </div>
    <!-- REGISTER MODAL -->
 
+   <!-- CREATE POST MODAL -->
+   <div class="modal fade" id="create-post-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+         <div class="modal-content">
+            <div class="modal-header">
+               <h1 class="modal-title fs-5" id="exampleModalLabel">Create A New Post</h1>
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+
+               <form>
+                  <div class="mb-3">
+                     <label for="post-title-input" class="col-form-label">Title:</label>
+                     <input type="text" class="form-control" id="post-title-input" placeholder="write your post title">
+                  </div>
+
+                  <div class="mb-3">
+                     <textarea placeholder="Write You Post Discription Here" id="post-body-input">
+
+                     </textarea>
+                  </div>
+
+                  <div class="mb-3">
+                     <label for="post-imgae-input" class="col-form-label">Image</label>
+                     <input type="file" class="form-control" id="post-imgae-input">
+                  </div>
+               </form>
+
+            </div>
+
+            <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+               <button type="button" class="btn btn-primary" onclick="createNewPostClicked()">Create</button>
+            </div>
+         </div>
+      </div>
+   </div>
+   <!-- CREATE POST MODAL -->
    <!-- MODALS -->
+
+   <!-- Add Post Button -->
+   <button id="add-post-btn" data-bs-toggle="modal" data-bs-target="#create-post-modal"
+      class="btn bg-primary rounded-circle">
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-plus-circle-fill"
+         viewBox="0 0 16 16">
+         <path
+            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
+      </svg>
+   </button>
+   <!-- Add Post Button -->
 
    <!-- ALERTS -->
    <div id="success-alert" class="alert fade show" role="alert"></div>
