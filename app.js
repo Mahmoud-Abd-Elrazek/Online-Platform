@@ -76,16 +76,47 @@ function loginBtnClicked() {
          const modalInstance = bootstrap.Modal.getInstance(modal);
          modalInstance.hide();
          setupUI();
-         shwoalertPlaceholder("Logged in successfully");
+         showAlert("Logged in successfully", "success");
       })
+      .catch((er) => {
+         showAlert(er.response.data.message, "danger");
+      });
 }
 
+function registerBtnClicked() {
+
+   const name = document.getElementById("register-name-input").value;
+   const username = document.getElementById("register-username-input").value;
+   const password = document.getElementById("register-password-input").value;
+
+   const params = {
+      "username": username,
+      "password": password,
+      "name": name
+   }
+   const url = `${baseUrl}/register`;
+   axios.post(url, params)
+      .then((response) => {
+         localStorage.setItem("token", response.data.token);
+         localStorage.setItem("user", JSON.stringify(response.data.user));
+
+         const modal = document.getElementById("register-modal");
+         const modalInstance = bootstrap.Modal.getInstance(modal);
+         modalInstance.hide();
+
+         showAlert("New User Register successfully", "success");
+         setupUI();
+      })
+      .catch((er) => {
+         showAlert(er.response.data.message, "danger");
+      });
+}
 function logout() {
    localStorage.removeItem("user");
    localStorage.removeItem("token");
 
    setupUI();
-   shwoalertPlaceholder("Logged out successfully");
+   showAlert("Logged out successfully", "success");
 }
 
 function setupUI() {
@@ -105,7 +136,7 @@ function setupUI() {
 } setupUI(); // call it directly 'Runnig All Time'
 
 
-function shwoalertPlaceholder(alertMessage) {
+function showAlert(alertMessage, type = 'success') {
    const alertPlaceholder = document.getElementById("success-alert");
    // Create the div element
 
@@ -122,7 +153,7 @@ function shwoalertPlaceholder(alertMessage) {
       alertPlaceholder.append(wrapper)
       temp = wrapper; // save the alret element
    }
-   appendAlert(alertMessage, 'success');
+   appendAlert(alertMessage, type);
 
    // todo: hide the alert
    setTimeout(() => {
