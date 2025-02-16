@@ -1,15 +1,30 @@
 const baseUrl = "https://tarmeezacademy.com/api/v1";
+let currentPage = 1;
+let lastPage = 1;
+// ================= INFINITE SCROLLING =================
+window.addEventListener("scroll", _ => {
+   const endOfPage = window.innerHeight + window.pageYOffset >= document.body.offsetHeight;
 
-function getPosts() {
+   if (endOfPage && currentPage < lastPage) {
+      currentPage++;
+      getPosts(false, currentPage);
+   }
+});
+// ================= INFINITE SCROLLING =================
+
+function getPosts(reload = true, page = 1) {
    var requestOptions = {
       method: 'GET',
       redirect: 'follow'
    };
 
-   fetch(`${baseUrl}/posts?limit=10`, requestOptions)
+   fetch(`${baseUrl}/posts?limit=5&page=${page}`, requestOptions)
       .then(response => response.json())
       .then(posts => {
-         document.getElementById("posts").innerHTML = "";
+         lastPage = posts.meta.last_page;
+         if (reload) {
+            document.getElementById("posts").innerHTML = "";
+         }
          for (const post of posts.data) {
             // todo: Add Tags here
             document.getElementById("posts").innerHTML += createPost(post);
@@ -82,7 +97,12 @@ function loginBtnClicked() {
          showAlert("Logged in successfully", "success");
       })
       .catch((er) => {
-         showAlert(er.response.data.message, "danger");
+         if (typeof er.response == "undefined") {
+            showAlert("Check The Internet Connection", "danger");
+         }
+         else {
+            showAlert(er.response.data.message, "danger");
+         }
       });
 }
 
