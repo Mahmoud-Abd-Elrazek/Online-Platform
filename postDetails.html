@@ -4,7 +4,7 @@
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Document</title>
+   <title>POST DETAILS</title>
 
    <!-- IMPORT Scripts & Styles -->
    <script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -205,17 +205,6 @@
    <!-- CREATE POST MODAL -->
    <!-- MODALS -->
 
-   <!-- Add Post Button -->
-   <button id="add-post-btn" data-bs-toggle="modal" data-bs-target="#create-post-modal"
-      class="btn bg-primary rounded-circle">
-      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-plus-circle-fill"
-         viewBox="0 0 16 16">
-         <path
-            d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z" />
-      </svg>
-   </button>
-   <!-- Add Post Button -->
-
    <!-- ALERTS -->
    <div id="success-alert" class="alert fade show" role="alert"></div>
    <!-- ALERTS -->
@@ -274,25 +263,134 @@
    <!-- MAIN CONTENT -->
    <div class="container">
 
+      <!-- USER POST -->
       <div class="d-flex justify-content-center mt-5">
-         <div class="col-9">
-            <!-- POSTS -->
-            <div id="posts">
+         <div class="col-lg-9">
+            <h1>
+               <span id="username-span">Koko's</span>
+               Post
+            </h1>
+         </div>
+      </div>
 
-               <!-- CARD START -->
+
+      <!-- POST ROW -->
+      <div class="d-flex justify-content-center mt-5">
+         <div class="col-lg-9" id="post">
+            <div class="card shadow-sm">
+
+               <div class="card-header">
+                  <img src="./profile-pics/user-4.png" style="width: 40px; height: 40px;" alt="profile picture"
+                     class="rounded-circle border-3">
+                  <b>@koko</b>
+               </div>
+
+               <div class="card-body">
+                  <img src="./placeholders/2.jpg" alt="post img" class="img-fluid">
+                  <h6 class="mt-1" style="color: rgb(58, 56, 56);">2 min ago</h6>
+                  <h5>Hello World</h5>
+                  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.</p>
+
+                  <hr>
+                  <div>
+                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-pen" viewBox="0 0 16 16">
+                        <path
+                           d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z" />
+                     </svg>
+                     <span>(3) Comments</span>
+                  </div>
+               </div>
+
+               <!-- COMMENTS -->
+               <div id="comments">
+                  <!-- COMMENT -->
+                  <div class="p-3" style="background-color: #beb9b9;">
+                     <!-- PROFILE PIC + USER NAME -->
+                     <div>
+                        <img src="./profile-pics/user-1.png" class="rounded-circle" style="width: 40px;">
+                        <b>@username</b>
+                     </div>
+                     <!-- PROFILE PIC + USER NAME -->
+                     <!-- COMMENT BODY -->
+                     <div>
+                        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Amet nostrum atque, at neque alias
+                        rerum
+                        debitis hic optio, magni dolorum quibusdam totam? Consequuntur molestias saepe excepturi
+                        veritatis,
+                        reiciendis voluptate officia.
+                     </div>
+                     <!-- COMMENT BODY -->
+                  </div>
+                  <!-- COMMENT -->
+               </div>
+               <!-- COMMENTS -->
+            </div>
+         </div>
+      </div>
+      <!-- POST ROW -->
+      <!-- USER POST -->
+   </div>
+   <!-- MAIN CONTENT -->
+
+</body>
+<script src="mainLogic.js"></script>
+<script>
+   const urlParam = new URLSearchParams(window.location.search);
+   const id = urlParam.get("postId");
+
+   function getPost() {
+      axios.get(`${baseUrl}/posts/${id}`)
+         .then((response) => {
+            const post = response.data.data;
+            const comments = post.comments;
+            const comments_count = post.comments_count;
+            const postImage = post.image;
+            const body = post.body;
+            const title = post.title;
+            const created_at = post.created_at;
+
+            const author = post.author;
+            const authorImage = author.profile_image;
+            document.getElementById("username-span").innerHTML = author.name;
+
+
+            let commentsContent = ``;
+            for (comment of comments) {
+               commentsContent += `
+               <!-- COMMENT -->
+               <div class="p-3" style="background-color: #beb9b9;">
+                  <!-- PROFILE PIC + USER NAME -->
+                  <div>
+                     <img src="${comment.author.profile_image}" class="rounded-circle" style="width: 40px;">
+                     <b>@${comment.author.username}</b>
+                  </div>
+                  <!-- PROFILE PIC + USER NAME -->
+                  <!-- COMMENT BODY -->
+                  <div>
+                     ${comment.body}
+                  </div>
+                  <!-- COMMENT BODY -->
+               </div>
+               <!-- COMMENT -->
+               `
+            }
+
+            const postContent =
+               `
                <div class="card shadow-sm">
 
                   <div class="card-header">
-                     <img src="./profile-pics/user-4.png" style="width: 40px; height: 40px;" alt="profile picture"
+                     <img src="${authorImage}" style="width: 40px; height: 40px;" alt="profile picture"
                         class="rounded-circle border-3">
-                     <b>@koko</b>
+                     <b>@${author.name}</b>
                   </div>
 
                   <div class="card-body">
-                     <img src="./placeholders/2.jpg" alt="post img" class="img-fluid">
-                     <h6 class="mt-1" style="color: rgb(58, 56, 56);">2 min ago</h6>
-                     <h5>Hello World</h5>
-                     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.</p>
+                     <img src="${postImage}" alt="post img" class="img-fluid">
+                     <h6 class="mt-1" style="color: rgb(58, 56, 56);">${created_at}</h6>
+                     <h5>${title}</h5>
+                     <p>${body}</p>
 
                      <hr>
                      <div>
@@ -301,22 +399,22 @@
                            <path
                               d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z" />
                         </svg>
-                        <span>(3) Comments</span>
+                        <span>(${comments_count}) Comments</span>
                      </div>
                   </div>
+                  <div id="comments">
+                     ${commentsContent}
+                  </div>
                </div>
-               <!-- CARD END -->
+            `;
+            document.getElementById("post").innerHTML = postContent
 
-            </div>
-            <!-- POSTS -->
-         </div>
-      </div>
+         }).catch((err) => {
+            showAlert("ERROR", "danger")
+         });
+   }
+   getPost();
 
-   </div>
-   <!-- MAIN CONTENT -->
-
-</body>
-<script src="mainLogic.js"></script>
-<script src="app.js"></script>
+</script>
 
 </html>
